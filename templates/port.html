@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Port Scanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div class="max-w-xl mx-auto mt-20">
+
+        <a href="/" class="text-gray-400 hover:text-white block mb-4">⬅ Back</a>
+
+
+        <h2 class="text-3xl font-bold text-green-400 mb-6">
+            Port Scanner
+        </h2>
+
+        <h3>Results for {{ request.form.target }}</h3>
+
+        <form method="POST" class="space-y-3">
+            <input type="text" name="target" placeholder="Enter host or IP" value="{{ target }}"
+                class="w-full p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none">
+
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" name="start_port" min="1" max="65535" value="{{ start_port }}"
+                    class="p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none">
+                <input type="number" name="end_port" min="1" max="65535" value="{{ end_port }}"
+                    class="p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none">
+            </div>
+
+            <button class="bg-green-500 px-6 py-3 rounded hover:bg-green-600 w-full">
+                Scan
+            </button>
+        </form>
+
+        {% if error %}
+            <div class="mt-6 bg-red-900/50 border border-red-700 text-red-200 p-4 rounded">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if ports %}
+            <div class="mt-6 bg-gray-800 p-4 rounded">
+                <h3 class="text-lg mb-3">Open Ports ({{ ports|length }} found):</h3>
+
+                <div class="grid grid-cols-1 gap-2">
+                    {% for port in ports %}
+                        <div class="bg-green-600 p-2 rounded flex justify-between">
+                            <span>Port {{ port.port }}</span>
+                            <span class="text-green-100">{{ port.service }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
