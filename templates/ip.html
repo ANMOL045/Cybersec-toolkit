@@ -15,7 +15,7 @@
     </h2>
 
     <form method="POST" class="flex gap-2">
-        <input type="text" name="ip" placeholder="Enter IP address"
+        <input type="text" name="ip" placeholder="Enter public IP address (e.g., 8.8.8.8)"
             class="flex-1 p-3 bg-gray-800 rounded border border-gray-700">
         
         <button class="bg-purple-500 px-6 rounded hover:bg-purple-600">
@@ -27,7 +27,7 @@
         <div class="mt-6 bg-gray-800 p-4 rounded">
             
             {% if data.error %}
-                <p class="text-red-400">Error fetching data</p>
+                <p class="text-red-400">Error: {{ data.error }}</p>
             {% else %}
                 <p><strong>IP:</strong> {{ data.query }}</p>
                 <p><strong>Country:</strong> {{ data.country }}</p>

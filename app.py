@@ -3,6 +3,7 @@ import socket
 import re
 import math
 import os
+import requests
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -128,22 +129,34 @@ def password():
     return render_template('password.html', result=result, feedback=feedback, strength=strength, entropy=entropy)
 
 
-if __name__ == "__main__":
-  port = int(os.environ.get("PORT", 8080))
-app.run(host="0.0.0.0", port=port)
-
+# IP LOOKUP
 @app.route('/ip', methods=['GET', 'POST'])
 def ip_lookup():
     data = None
 
     if request.method == 'POST':
-        ip = request.form['ip']
+        ip = request.form.get('ip', '').strip()
         
-        try:
-            res = requests.get(f"http://ip-api.com/json/{ip}")
-            data = res.json()
-        except:
-            data = {"error": "Invalid request"}
+        if ip:
+            try:
+                res = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
+                response_data = res.json()
+                
+                if response_data.get('status') == 'success':
+                    data = response_data
+                else:
+                    data = {"error": response_data.get('message', 'IP not found')}
+            except requests.exceptions.RequestException:
+                data = {"error": "Unable to fetch data. Check your internet connection."}
+            except:
+                data = {"error": "Invalid request"}
+        else:
+            data = {"error": "Please enter an IP address"}
 
     return render_template('ip.html', data=data)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
 
