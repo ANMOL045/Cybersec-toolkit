@@ -3,6 +3,7 @@ import socket
 import re
 import math
 import os
+
 from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
@@ -131,4 +132,18 @@ if __name__ == "__main__":
   port = int(os.environ.get("PORT", 8080))
 app.run(host="0.0.0.0", port=port)
 
+@app.route('/ip', methods=['GET', 'POST'])
+def ip_lookup():
+    data = None
+
+    if request.method == 'POST':
+        ip = request.form['ip']
+        
+        try:
+            res = requests.get(f"http://ip-api.com/json/{ip}")
+            data = res.json()
+        except:
+            data = {"error": "Invalid request"}
+
+    return render_template('ip.html', data=data)
 
